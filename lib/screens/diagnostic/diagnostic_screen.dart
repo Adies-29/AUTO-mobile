@@ -1,8 +1,9 @@
 import 'package:auto/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:auto/shared/widgets/app_button.dart';
 
 class DiagnosticScreen extends StatelessWidget {
-  const new({super.key});
+  const DiagnosticScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,17 @@ class DiagnosticScreen extends StatelessWidget {
                 icon: Icon(Icons.help_outline))
             ],
         ),
-      body: Center(child: Text('diagnosa screen')),
+      body: Align(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: EdgeInsetsGeometry.only(bottom: 16),
+          child: AppButton(
+            label: 'Scan',
+            onPressed: (){},
+          ),
+          
+          ),
+      )
     );
   }
 }
