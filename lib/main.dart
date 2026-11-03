@@ -6,7 +6,7 @@ import 'screens/liveData/live_data_screen.dart';
 import 'screens/diagnostic/diagnostic_screen.dart';
 import 'screens/setting/settings_screen.dart';
 
-void main(){
+void main() {
   runApp(const MainApp());
 }
 
@@ -17,9 +17,17 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'AUTO Mobile',
-      debugShowCheckedModeBanner:false,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)
+        // 👇 Gunakan font Manrope yang ada di folder assets/fonts 👇
+        fontFamily: 'Manrope', 
+        
+        // 👇 Gunakan warna biru dari Figma sebagai warna utama 👇
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF4599FE), // Warna biru AUTO
+        ),
+        
+        useMaterial3: true,
       ),
       home: const MainScreen(),
     );
@@ -33,7 +41,7 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen>{
+class MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
 
   final List<Widget> pages = [
@@ -41,20 +49,22 @@ class MainScreenState extends State<MainScreen>{
     const LiveDataScreen(),
     const DiagnosticScreen(),
     const SettingsScreen(),
-    
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Pastikan background scaffold putih agar sesuai dengan desain Figma
+      backgroundColor: Colors.white, 
       body: IndexedStack(
-        index:currentIndex,
+        index: currentIndex,
         children: pages,
       ),
-       bottomNavigationBar: Padding(
+      bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
         child: Container(
           decoration: BoxDecoration(
-            color: AppColors.background,
+            color: AppColors.background, // Pastikan warna ini cocok (putih/abu-abu terang)
             borderRadius: BorderRadius.circular(30),
             boxShadow: [
               BoxShadow(
@@ -73,9 +83,6 @@ class MainScreenState extends State<MainScreen>{
           ),
         ),
       ),
-      
-        
-
     );
   }
 }
