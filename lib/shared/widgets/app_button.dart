@@ -115,40 +115,65 @@ class NotchButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16),
+      margin: EdgeInsets.fromLTRB(16, 28, 16, 0),
       child: Stack(
         clipBehavior: Clip.none,
+        alignment: Alignment.topCenter,
         children: [
           SizedBox(
             width: double.infinity,
+            height: 50 ,
             child: FilledButton(
               onPressed: onPressed, 
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: AppColors.surface,
+                disabledBackgroundColor: AppColors.primary,
+                disabledForegroundColor: AppColors.surface,
                 shape: StadiumBorder(),
-                maximumSize: Size.fromHeight(52),
+                padding: EdgeInsets.only(top: 8),
                 textStyle: TextStyle(
                   fontFamily: 'Manrope',
                   fontSize: 15,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               child: Text(label),
             ),
           ),
           Positioned(
-            top: -16,
+            top: -26,
             child: Container(
-              width: 36,
-              height: 36,
+              width: 46,
+              height: 46,
               decoration: BoxDecoration(
                 color: AppColors.primary,
                 shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColors.primary,
+                  width: 1.5
+                )
               ),
-              child: Icon(icon,size: 20, color: AppColors.surface,),
+              child: Center(
+                child: Container(
+                  width: 24,
+                  height: 22,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: AppColors.surface,
+                      width: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(5),
+                ),   
+                child: Icon(
+                  Icons.photo_camera,
+                  size: 16,
+                  color: AppColors.surface,
+                )
+              )
             ),
-
+          )
           )
         ],
       ),
