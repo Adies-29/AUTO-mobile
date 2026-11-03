@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+
 class AppColors{
   // Base
   static const Color background = Color(0xFFFFFFFF);
@@ -14,5 +16,14 @@ class AppColors{
   static const Color blueAccent = Color(0xFF2F80ED);    // Teks kode sensor (LOAD, ECT, dll)
   static const Color success = Color(0xFF22C55E);       // Indikator hijau status norma
   static const Color anomali = Color(0xFFFF3700);       // Indikator hijau status tidak norma
+
+  // ==========================================
+  // DARI TOKENS (Warna & Ukuran)
+  // ==========================================
+  static const Color blue = Color(0xFF4599FE);
+  static const Color black = Colors.black;
+  static const Color white = Colors.white;
+  static const Color statusGrey = Color(0xFF9E9E9E);
+  static const Color subtitleGrey = Color(0xFF6B6B6B);
 
 }

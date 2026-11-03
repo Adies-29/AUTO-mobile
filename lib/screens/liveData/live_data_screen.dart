@@ -83,7 +83,7 @@ class HeaderRow extends StatelessWidget {
     return Container(
       padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.anomali)),
+        border: Border(bottom: BorderSide(color: AppColors.secondary)),
       ),
       child: Row(
         children: [
@@ -130,7 +130,7 @@ class SensorsRow extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.anomali)),
+        border: Border(bottom: BorderSide(color: AppColors.secondary)),
       ),
 
       child: Row(

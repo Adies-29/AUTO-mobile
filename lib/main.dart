@@ -19,7 +19,7 @@ class MainApp extends StatelessWidget {
       title: 'AUTO Mobile',
       debugShowCheckedModeBanner:false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.background)
       ),
       home: const MainScreen(),
     );
