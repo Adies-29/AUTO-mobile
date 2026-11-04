@@ -4,6 +4,7 @@ import 'package:auto/features/shared/widgets/my_app_bar.dart';
 import '../widgets/garasi.dart';
 import 'package:auto/features/shared/widgets/pilihan_koneksi.dart';
 import 'package:auto/features/liveData/screens/live_data_screen.dart';
+import 'package:auto/features/home/widgets/dialog_cara_menghubungkan.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -69,7 +70,14 @@ class SettingsScreen extends StatelessWidget {
                 _SettingsItem(
                   icon: Icons.menu_book_outlined,
                   title: 'Petunjuk',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DialogCaraMenghubungkan(), 
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

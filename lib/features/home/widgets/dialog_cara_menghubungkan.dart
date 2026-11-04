@@ -1,5 +1,5 @@
-import 'package:auto/core/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:auto/core/theme/colors.dart';
 
 class Langkah {
   final String title;
@@ -23,48 +23,56 @@ class DialogCaraMenghubungkan extends StatefulWidget {
 }
 
 class _DialogCaraMenghubungkanState extends State<DialogCaraMenghubungkan> {
-  bool _isWifiSelected = true;
+  // 👇 Ubah default ke false agar Bluetooth yang muncul duluan
+  bool _isWifiSelected = false; 
   int _expandedIndex = -1;
 
   final List<Langkah> _langkahBluetooth = [
     Langkah(
       title: 'Langkah 1',
       desc: 'Hubungkan OBD anda ke mobil',
-      detail:'Port OBD-II biasanya terletak di bawah dashboard. Untuk mobil tertentu, lokasinya bisa berbeda',
-      images:['assets/images/car.png','assets/images/avanza.png']
+      detail: 'Port OBD-II biasanya terletak di bawah dashboard. Untuk mobil tertentu, lokasinya bisa berbeda',
+      images: ['assets/images/car.png', 'assets/images/avanza.png'],
     ),
     Langkah(
       title: 'Langkah 2',
-      desc: 'Aktifkan Bluetooth di posnel anda',
-      detail:'Buka pengaturan Bluetooth dan cari device OBD anda. Hubungkan dengan password default',
-      images:['assets/images/car.png','assets/images/avanza.png']
+      desc: 'Aktifkan Bluetooth di ponsel anda',
+      detail: 'Buka pengaturan Bluetooth dan cari device OBD anda. Hubungkan dengan password default',
+      images: ['assets/images/car.png', 'assets/images/avanza.png'],
     ),
     Langkah(
       title: 'Langkah 3',
       desc: 'Jalankan aplikasi AUTO',
-      detail:'Port OBD-II biasanya terletak di bawah dashboard. Untuk mobil tertentu, lokasinya bisa berbeda',
-      images:['assets/images/car.png','assets/images/car.png']
+      detail: 'Port OBD-II biasanya terletak di bawah dashboard. Untuk mobil tertentu, lokasinya bisa berbeda',
+      images: ['assets/images/car.png', 'assets/images/car.png'],
     ),
     Langkah(
       title: 'Langkah 4',
       desc: 'Hubungkan Mobil Anda',
-      detail:'Di layar hime',
-      images:['assets/images/car.png','assets/images/car.png']
+      detail: 'Di layar home, tekan tombol "Hubungkan mobil anda"',
+      images: ['assets/images/car.png', 'assets/images/car.png'],
     ),
     Langkah(
       title: 'Langkah 5',
       desc: 'Pilih metode koneksi',
-      detail:'Di layar hime',
-      images:['assets/images/car.png','assets/images/car.png']
+      detail: 'Pilih Bluetooth pada jendela yang muncul',
+      images: ['assets/images/car.png', 'assets/images/car.png'],
     ),
   ];
 
   final List<Langkah> _langkahWifi = [
-   Langkah(
-      title: 'Langkah 5',
+    // Saya tambahkan dummy data agar tidak kosong saat toggle ditekan
+    Langkah(
+      title: 'Langkah 1',
+      desc: 'Sambungkan ke Wi-Fi OBD',
+      detail: 'Buka pengaturan Wi-Fi HP dan sambungkan ke jaringan OBD-II',
+      images: ['assets/images/car.png', 'assets/images/car.png'],
+    ),
+    Langkah(
+      title: 'Langkah 2',
       desc: 'Pilih metode koneksi',
-      detail:'Di layar hime',
-      images:['assets/images/car.png','assets/images/car.png']
+      detail: 'Pilih Wi-Fi di aplikasi AUTO dan masukkan IP default',
+      images: ['assets/images/car.png', 'assets/images/car.png'],
     ),
   ];
 
@@ -73,37 +81,31 @@ class _DialogCaraMenghubungkanState extends State<DialogCaraMenghubungkan> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
+    // 👇 Ganti Dialog menjadi Scaffold 👇
+    return Scaffold(
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-      insetPadding: EdgeInsets.zero,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back, size: 18, color: Colors.black),
-                  onPressed: () => Navigator.of(context).pop(),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                ),
-                const SizedBox(width: 8),
-                const Text(
-                  'Cara menghubungkan',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Manrope',
-                  ),
-                ),
-              ],
-            ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, size: 24, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: const Text(
+          'Cara menghubungkan',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Manrope',
+            color: Colors.black,
           ),
+        ),
+      ),
+      body: Column(
+        children: [
+          // Toggle Bluetooth / Wi-Fi
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Container(
               height: 44,
               decoration: BoxDecoration(
@@ -164,14 +166,17 @@ class _DialogCaraMenghubungkanState extends State<DialogCaraMenghubungkan> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
+
+          // List Langkah-langkah (Di sini 'Expanded' aman karena dibungkus Scaffold)
           Expanded(
             child: ListView.builder(
-              shrinkWrap: true,
+              // shrinkWrap tidak perlu karena sudah pakai Expanded
               itemCount: _currentLangkah.length,
               itemBuilder: (context, index) {
                 final item = _currentLangkah[index];
                 final isExpanded = _expandedIndex == index;
+                
                 return Column(
                   children: [
                     InkWell(
@@ -179,7 +184,7 @@ class _DialogCaraMenghubungkanState extends State<DialogCaraMenghubungkan> {
                         _expandedIndex = isExpanded ? -1 : index;
                       }),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -193,8 +198,7 @@ class _DialogCaraMenghubungkanState extends State<DialogCaraMenghubungkan> {
                                       color: Colors.blue,
                                       fontSize: 14,
                                       fontFamily: 'Manrope',
-                                      fontWeight: FontWeight.w700
-                                      
+                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
                                   const SizedBox(height: 4),
@@ -211,48 +215,51 @@ class _DialogCaraMenghubungkanState extends State<DialogCaraMenghubungkan> {
                             ),
                             Icon(
                               isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                              color: AppColors.black87,
+                              // 👇 Perbaikan typo AppColors.black87 menjadi Colors.black87 👇
+                              color: Colors.black87, 
                             ),
                           ],
                         ),
                       ),
                     ),
-                    // === KONTEN DETAIL
+                    
+                    // === KONTEN DETAIL ===
                     if (isExpanded)
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               item.detail,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: 'Manrope',
                                 fontSize: 14,
-                                color: AppColors.black,
-                                height: 1.5
+                                color: Colors.black,
+                                height: 1.5,
                               ),
                             ),
-                            SizedBox(height: 12,),
-                            //images
+                            const SizedBox(height: 12),
+                            // Images
                             SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                 children: item.images.map((imagePath) {
                                   return Padding(
-                                    padding: EdgeInsets.only(right: 8),
+                                    padding: const EdgeInsets.only(right: 8),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(8),
                                       child: Image.asset(
                                         imagePath,
                                         height: 200,
-                                        fit: BoxFit.cover
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
                                   );
-                                }).toList()
+                                }).toList(),
                               ),
-                            )
+                            ),
+                            const Divider(height: 32), // Tambahkan garis pembatas di bawah detail
                           ],
                         ),
                       ),
@@ -261,7 +268,6 @@ class _DialogCaraMenghubungkanState extends State<DialogCaraMenghubungkan> {
               },
             ),
           ),
-          const SizedBox(height: 16),
         ],
       ),
     );
