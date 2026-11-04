@@ -1,5 +1,6 @@
 import 'package:auto/core/theme/colors.dart';
 import 'package:flutter/material.dart';
+import '../../home/widgets/dialog_cara_menghubungkan.dart';
 
 class ProtokolSheet extends StatefulWidget {
   final String? currentProtocol;
@@ -72,7 +73,12 @@ class _ProtokolSheetState extends State<ProtokolSheet> {
               ),
               IconButton(
                 icon: const Icon(Icons.info_outline, color: AppColors.black),
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const DialogCaraMenghubungkan(),
+                  );
+                },
               ),
             ],
           ),
