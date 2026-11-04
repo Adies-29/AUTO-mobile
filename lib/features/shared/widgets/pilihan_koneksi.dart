@@ -48,7 +48,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
     return Container(
       padding: const EdgeInsets.only(top: 12, left: 24, right: 24, bottom: 24),
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
       ),
       child: SingleChildScrollView(
@@ -71,7 +71,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.black),
+                  icon: const Icon(Icons.arrow_back, color: AppColors.black),
                   onPressed: () => Navigator.pop(context),
                 ),
                 const Text(
@@ -83,7 +83,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.info_outline, color: Colors.black),
+                  icon: const Icon(Icons.info_outline, color: AppColors.black),
                   onPressed: () {},
                 ),
               ],

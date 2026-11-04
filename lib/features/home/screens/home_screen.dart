@@ -1,20 +1,16 @@
 import 'dart:ui';
+
 import 'package:auto/features/home/widgets/home_app_bar.dart';
 import 'package:auto/features/shared/widgets/pilihan_koneksi.dart';
 import 'package:auto/core/theme/spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:auto/core/theme/colors.dart'; 
-
+import 'package:auto/core/theme/colors.dart';
+import 'package:auto/features/shared/widgets/loading_overlay.dart';
 import 'home_connected.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({
-    super.key,
-    this.onProfileTap,
-    this.onReadMoreTap,
-  });
+  const HomeScreen({super.key, this.onReadMoreTap});
 
-  final VoidCallback? onProfileTap;
   final VoidCallback? onReadMoreTap;
 
   @override
@@ -23,13 +19,27 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isConnected = false;
+  bool _isLoading = true;
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+  Future<void> _loadData() async {
+    // panggil API / database / proses loading asli di sini
+    await Future.delayed(const Duration(seconds: 1));
+
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+  }
+  
 
   void _showConnectionModal() async {
     final result = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      barrierColor: Colors.transparent,
+      barrierColor: AppColors.black.withValues(alpha: 0.5),
       builder: (context) {
         return Stack(
           children: [
@@ -38,7 +48,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () => Navigator.pop(context),
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                  child: Container(color: AppColors.black.withValues(alpha: 0.5)),
+                  child: Container(
+                        
+                  ),
                 ),
               ),
             ),
@@ -60,43 +72,48 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Widget content;
     if (_isConnected) {
-      return Scaffold(
+      content = Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.screenPadding,
+            ),
             child: const HomeConnectedScreen(),
           ),
         ),
       );
-    }
-
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
-          child: Column(
-            children: [
-              const SizedBox(height: 16),
-              DashboardTopBar(onProfileTap: widget.onProfileTap),
-              Expanded(
-                child: _DashboardCenter(
-                  onConnectTap: _showConnectionModal,
+    } else {
+      content = Scaffold(
+        backgroundColor: AppColors.background,
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.screenPadding,
+            ),
+            child: Column(
+              children: [
+                SizedBox(height: 16),
+                DashboardTopBar(),
+                Expanded(
+                  child: _DashboardCenter(onConnectTap: _showConnectionModal,),
                 ),
-              ),
-              ReadMoreButton(onPressed: widget.onReadMoreTap),
-              const SizedBox(height: 16),
-            ],
-          ),
+                ReadMoreButton(onPressed: widget.onReadMoreTap,),
+                SizedBox(height: 16,),
+              ],
+            ),
+          )
         ),
-      ),
+      );
+    }
+     return LoadingOverlay(
+      isLoading: _isLoading,
+      child: content,
     );
   }
 }
-
-
 
 class _DashboardCenter extends StatelessWidget {
   const _DashboardCenter({this.onConnectTap});
@@ -108,10 +125,7 @@ class _DashboardCenter extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: 16),
-        const Align(
-          alignment: Alignment.centerLeft,
-          child: ConnectionStatus(),
-        ),
+        const Align(alignment: Alignment.centerLeft, child: ConnectionStatus()),
         const Spacer(),
         const CarImage(),
         const SizedBox(height: 24),
@@ -144,10 +158,7 @@ class ConnectionStatus extends StatelessWidget {
 }
 
 class CarImage extends StatelessWidget {
-  const CarImage({
-    super.key,
-    this.height = AppSpacing.carHeight,
-  });
+  const CarImage({super.key, this.height = AppSpacing.carHeight});
 
   final double height;
 
@@ -250,5 +261,3 @@ class ReadMoreButton extends StatelessWidget {
     );
   }
 }
-
-

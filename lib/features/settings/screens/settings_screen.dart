@@ -1,6 +1,7 @@
-import 'package:auto/core/theme/colors.dart';
+
 import 'package:auto/features/shared/widgets/app_button.dart';
 import 'package:auto/features/shared/widgets/car_profile_card.dart';
+import 'package:auto/features/shared/widgets/my_app_bar.dart';
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -9,21 +10,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     appBar: AppBar(
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: Icon(Icons.arrow_back)
-            ),
-            title: Text('Setting'),
-            elevation: 0,
-            backgroundColor: AppColors.background,
-            foregroundColor: AppColors.primary,
-            actions: [
-              IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.help_outline))
-            ],
-      ),
+     appBar: MyAppBar(title: ('Setting')),
       body: Column(
         children: [
           const SizedBox(height: 16),
