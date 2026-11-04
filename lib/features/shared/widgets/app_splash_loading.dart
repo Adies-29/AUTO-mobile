@@ -12,8 +12,7 @@ class AppSplashLoading extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // 👇 Spacer di atas dibuat lebih besar (flex: 1) 
-          // agar seluruh konten terdorong ke atas 👇
+        
           const Spacer(flex: 1),
           
           // Logo AUTO
