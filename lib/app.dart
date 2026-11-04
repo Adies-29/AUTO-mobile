@@ -1,9 +1,11 @@
+import 'package:auto/core/providers/auth_provider.dart';
 import 'package:auto/features/home/screens/home_screen.dart';
+import 'package:auto/features/shared/widgets/loading_overlay.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:auto/core/theme/colors.dart';
 import 'package:auto/core/theme/theme.dart';
 import 'package:auto/features/shared/widgets/bottom_nav_bar.dart';
-
 import 'package:auto/features/liveData/screens/live_data_screen.dart';
 import 'package:auto/features/diagnostic/screens/diagnostic_screen.dart';
 import 'package:auto/features/settings/screens/settings_screen.dart';
@@ -14,11 +16,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'AUTO Mobile',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.theme, // Gunakan tema dari core/theme/theme.dart
-      home: const MyAppScreen(), // Mengganti MainScreen
+    return ChangeNotifierProvider(
+      create: (_) => AuthProvider(),
+      child: MaterialApp(
+        title: 'AUTO Mobile',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.theme,
+        home: LoadingOverlay(
+          isLoading: false,
+          child: const MyAppScreen(),
+        ),
+      ),
     );
   }
 }

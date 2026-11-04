@@ -14,7 +14,14 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
         icon: const Icon(Icons.arrow_back),
         onPressed: () => Navigator.pop(context),
       ),
-      title: Text(title),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: AppColors.black,
+        ),
+      ),
       elevation: 0,
       backgroundColor: AppColors.background,
       foregroundColor: AppColors.primary,

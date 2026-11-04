@@ -3,6 +3,7 @@ import 'package:auto/features/shared/widgets/dtc_card.dart';
 import 'package:flutter/material.dart';
 import 'package:auto/features/shared/widgets/app_button.dart';
 import 'package:auto/features/diagnostic/screens/models/dtc_model.dart'; // Pastikan ini ada
+import 'package:auto/features/shared/widgets/my_app_bar.dart';
 
 class DiagnosticScreen extends StatefulWidget {
   const DiagnosticScreen({super.key});
@@ -15,22 +16,15 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
   bool _showNoAnomalies = false; // State untuk menampilkan UI "tidak ada anomali"
   List<DtcModel>? _scanResults;
 
+  // State untuk tracking expand/collapse ExpansionTile
+  bool _confirmedExpanded = true;
+  bool _pendingExpanded = false;
+  bool _permanentExpanded = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back),
-        ),
-        title: const Text('Diagnostic'),
-        elevation: 0,
-        backgroundColor: AppColors.background,
-        foregroundColor: AppColors.primary,
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.help_outline))
-        ],
-      ),
+      appBar: MyAppBar(title: ('Diagnostic')),
       body: Column(
         children: [
           const SizedBox(height: 16),
@@ -164,8 +158,17 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
               if (confirmed.isNotEmpty)
                 ExpansionTile(
                   title: Text('Terkonfirmasi DTC (${confirmed.length})'),
-                  trailing: const Icon(Icons.arrow_drop_up),
-                  initiallyExpanded: true,
+                  trailing: AnimatedRotation(
+                    turns: _confirmedExpanded ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: const Icon(Icons.arrow_drop_down),
+                  ),
+                  initiallyExpanded: _confirmedExpanded,
+                  onExpansionChanged: (expanded) {
+                    setState(() {
+                      _confirmedExpanded = expanded;
+                    });
+                  },
                   children: confirmed
                       .map((dtc) => DtcCard(
                             code: dtc.code,
@@ -179,7 +182,17 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
               if (pending.isNotEmpty)
                 ExpansionTile(
                   title: Text('Pending DTC (${pending.length})'),
-                  trailing: const Icon(Icons.arrow_drop_down),
+                  trailing: AnimatedRotation(
+                    turns: _pendingExpanded ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: const Icon(Icons.arrow_drop_down),
+                  ),
+                  initiallyExpanded: _pendingExpanded,
+                  onExpansionChanged: (expanded) {
+                    setState(() {
+                      _pendingExpanded = expanded;
+                    });
+                  },
                   children: pending
                       .map((dtc) => DtcCard(
                             code: dtc.code,
@@ -193,7 +206,17 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
               if (permanent.isNotEmpty)
                 ExpansionTile(
                   title: Text('Permanent DTC (${permanent.length})'),
-                  trailing: const Icon(Icons.arrow_drop_down),
+                  trailing: AnimatedRotation(
+                    turns: _permanentExpanded ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: const Icon(Icons.arrow_drop_down),
+                  ),
+                  initiallyExpanded: _permanentExpanded,
+                  onExpansionChanged: (expanded) {
+                    setState(() {
+                      _permanentExpanded = expanded;
+                    });
+                  },
                   children: permanent
                       .map((dtc) => DtcCard(
                             code: dtc.code,
