@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; // 👈 Import Provider
-import 'package:auto/core/providers/auth_provider.dart'; // 👈 Import AuthProvider
-
+import 'package:provider/provider.dart';
+import 'package:auto/core/providers/auth_provider.dart';
 import 'package:auto/core/theme/colors.dart';
 import 'package:auto/features/home/screens/home_screen.dart';
 import 'package:auto/features/shared/widgets/bottom_nav_bar.dart';
@@ -19,17 +18,15 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 👇 BUNGKUS DENGAN PROVIDER DI SINI 👇
     return ChangeNotifierProvider(
-      create: (context) => AuthProvider(), // Inisialisasi AuthProvider
+      create: (context) => AuthProvider(),
       child: MaterialApp(
         title: 'AUTO Mobile',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          fontFamily: 'Manrope', 
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF4599FE),
-          ),
+          fontFamily: 'Manrope',
+          scaffoldBackgroundColor: Colors.white,
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4599FE)),
           useMaterial3: true,
         ),
         home: const MainScreen(),
@@ -38,20 +35,16 @@ class MainApp extends StatelessWidget {
   }
 }
 
-// ... (Class MainScreen dan MainScreenState di bawahnya biarkan tetap sama) ...
-
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
   @override
-  State<MainScreen> createState() => MainScreenState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
-  
-  // State untuk Splash Screen Awal (Layar Hitam)
-  bool _isAppLoading = true; 
+  bool _isAppLoading = true;
 
   final List<Widget> pages = [
     const HomeScreen(),
@@ -63,19 +56,15 @@ class MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _loadData();
-  }
-
-  Future<void> _loadData() async {
-    // Jeda 3 detik untuk Splash Screen
-    await Future.delayed(const Duration(seconds: 3)); 
-    if (!mounted) return;
-    setState(() => _isAppLoading = false);
+    // Loading Splash Screen selama 3 detik
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) setState(() => _isAppLoading = false);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // 👇 1. Tampilkan Splash Screen Full tanpa Navbar 👇
+    // 1. Tampilkan Splash Screen
     if (_isAppLoading) {
       return const Scaffold(
         backgroundColor: Colors.black,
@@ -83,16 +72,37 @@ class MainScreenState extends State<MainScreen> {
       );
     }
 
-    // 👇 2. Tampilkan Aplikasi Utama + Navbar 👇
+    // 2. Tampilkan Aplikasi Utama
     return Scaffold(
-      backgroundColor: Colors.white,
+      // Hapus 'extendBody: true' agar tombol Scan tidak tertutup
       body: IndexedStack(
         index: currentIndex,
         children: pages,
       ),
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: currentIndex,
-        onTap: (index) => setState(() => currentIndex = index),
+      
+      // 👇 PERBAIKAN NAVBAR: Bungkus dengan Container agar muncul sempurna 👇
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16), // Jarak dari pinggir layar
+          child: Container(
+            height: 60, // Tinggi navbar
+            decoration: BoxDecoration(
+              color: Colors.white, // Background navbar
+              borderRadius: BorderRadius.circular(30), // Sudut membulat
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.06),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: BottomNavBar(
+              currentIndex: currentIndex,
+              onTap: (index) => setState(() => currentIndex = index),
+            ),
+          ),
+        ),
       ),
     );
   }
