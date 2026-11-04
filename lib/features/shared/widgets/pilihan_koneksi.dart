@@ -1,6 +1,7 @@
-import 'package:auto/core/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'protokol.dart';
+// 👇 Sesuaikan path import ini dengan lokasi dialog_tambah_mobil kamu 👇
+import 'package:auto/features/settings/widgets/dialog_tambah_mobil.dart'; 
 
 class PilihanKoneksiSheet extends StatefulWidget {
   const PilihanKoneksiSheet({super.key});
@@ -10,12 +11,9 @@ class PilihanKoneksiSheet extends StatefulWidget {
 }
 
 class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
-  // 👇 KEMBALIKAN KE -1 AGAR TIDAK ADA YANG TERPILIH DI AWAL 👇
   int _selectedIndex = -1; 
-  
-  String? _selectedProtocol = 'Auto'; // Default protokol awal
+  String? _selectedProtocol = 'Auto';
 
-  // Controller untuk TextField Wi-Fi
   final TextEditingController _ipController = TextEditingController(text: '192.168.0.10');
   final TextEditingController _portController = TextEditingController(text: '35000');
 
@@ -48,7 +46,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
     return Container(
       padding: const EdgeInsets.only(top: 12, left: 24, right: 24, bottom: 24),
       decoration: const BoxDecoration(
-        color: AppColors.surface,
+        color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
       ),
       child: SingleChildScrollView(
@@ -71,7 +69,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.arrow_back, color: AppColors.black),
+                  icon: const Icon(Icons.arrow_back, color: Colors.black),
                   onPressed: () => Navigator.pop(context),
                 ),
                 const Text(
@@ -83,7 +81,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.info_outline, color: AppColors.black),
+                  icon: const Icon(Icons.info_outline, color: Colors.black),
                   onPressed: () {},
                 ),
               ],
@@ -97,7 +95,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
                 Icon(
                   Icons.bluetooth,
                   size: 32,
-                  color: _selectedIndex == 0 ? AppColors.black : Colors.grey[400],
+                  color: _selectedIndex == 0 ? Colors.black : Colors.grey[400],
                 ),
                 const SizedBox(width: 16),
                 Row(
@@ -108,7 +106,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
                       width: 4,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: _selectedIndex == 1 ? AppColors.black : Colors.grey[400],
+                        color: _selectedIndex == 1 ? Colors.black : Colors.grey[400],
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -118,30 +116,77 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
                 Icon(
                   Icons.wifi,
                   size: 32,
-                  color: _selectedIndex == 1 ? AppColors.black : Colors.grey[400],
+                  color: _selectedIndex == 1 ? Colors.black : Colors.grey[400],
                 ),
               ],
             ),
             const SizedBox(height: 24),
 
-            // ------------------ BAGIAN JENIS ------------------
+            // 👇 TAMBAHAN BARU: Teks dan Tombol Tambah Mobil 👇
             const Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Jenis',
+                'Tambahkan Mobil anda terlebih dahulu',
                 style: TextStyle(
                   fontSize: 13,
-                  color: AppColors.subtitleGrey,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
                   fontFamily: 'Manrope',
                 ),
               ),
             ),
             const SizedBox(height: 8),
+            GestureDetector(
+              onTap: () {
+                // Navigasi ke halaman DialogTambahMobil
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const DialogTambahMobil(),
+                  ),
+                );
+              },
+              child: Container(
+                height: 48,
+                width: double.infinity,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF2F2F7), // Warna abu-abu terang
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Text(
+                  'Tambahkan Mobil Anda +',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                    fontFamily: 'Manrope',
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Teks Petunjuk Koneksi (Disesuaikan dengan Figma)
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Silahkan pilih jenis Koneksi OBD II',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Color(0xFF6B6B6B),
+                  fontFamily: 'Manrope',
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            
+            // Toggle / Segmented Control
             Container(
               height: 48,
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: AppColors.surface,
+                color: const Color(0xFFF2F2F7),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -164,7 +209,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
               ),
             ),
 
-            // 👇 BAGIAN PROTOKOL HANYA MUNCUL JIKA SUDAH MEMILIH (BUKAN -1) 👇
+            // BAGIAN PROTOKOL
             if (_selectedIndex != -1) ...[
               const SizedBox(height: 20),
               const Align(
@@ -173,7 +218,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
                   'Protokol',
                   style: TextStyle(
                     fontSize: 13,
-                    color: AppColors.subtitleGrey,
+                    color: Color(0xFF6B6B6B),
                     fontFamily: 'Manrope',
                   ),
                 ),
@@ -185,7 +230,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
                   height: 48,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
-                    color: AppColors.surface,
+                    color: const Color(0xFFF2F2F7),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -196,7 +241,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
                         style: TextStyle(
                           fontSize: 13,
                           fontFamily: 'Manrope',
-                          color: AppColors.black,
+                          color: Colors.black87,
                         ),
                       ),
                       Row(
@@ -205,7 +250,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
                             _selectedProtocol ?? 'Pilih',
                             style: const TextStyle(
                               fontSize: 13,
-                              color: AppColors.blue, // Biru
+                              color: Color(0xFF4599FE),
                               fontWeight: FontWeight.w600,
                               fontFamily: 'Manrope',
                             ),
@@ -214,7 +259,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
                           const Icon(
                             Icons.keyboard_arrow_down,
                             size: 20,
-                            color: AppColors.blue,
+                            color: Color(0xFF4599FE),
                           ),
                         ],
                       ),
@@ -224,8 +269,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
               ),
             ],
 
-            // ------------------ BAGIAN PENGATURAN WI-FI ------------------
-            // 👇 HANYA MUNCUL JIKA MEMILIH WI-FI (INDEX 1) 👇
+            // BAGIAN PENGATURAN WI-FI
             if (_selectedIndex == 1) ...[
               const SizedBox(height: 20),
               const Align(
@@ -240,21 +284,18 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
                 ),
               ),
               const SizedBox(height: 12),
-              
               _buildCustomTextField(
                 label: 'Alamat IP adaptor',
                 controller: _ipController,
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 12),
-              
               _buildCustomTextField(
                 label: 'Port IP Adaptor',
                 controller: _portController,
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 12),
-
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -266,7 +307,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
                   '728.728.69.0 : 23 (OBD KEY)',
                   style: TextStyle(
                     fontSize: 11,
-                    color: AppColors.subtitleGrey,
+                    color: Color(0xFF6B6B6B),
                     height: 1.5,
                     fontFamily: 'Manrope',
                   ),
@@ -276,19 +317,18 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
 
             const SizedBox(height: 24),
 
-            // ------------------ TOMBOL HUBUNGKAN ------------------
+            // TOMBOL HUBUNGKAN
             SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
                 onPressed: _selectedIndex == -1
-                    ? null // Nonaktifkan tombol jika belum memilih jenis
+                    ? null
                     : () {
-                        // Logika ketika tombol Hubungkan ditekan
-                        Navigator.pop(context, true);
+                        Navigator.pop(context, true); 
                       },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.black,
+                  backgroundColor: Colors.black,
                   disabledBackgroundColor: Colors.grey[300],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25),
@@ -298,7 +338,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
                 child: const Text(
                   'Hubungkan',
                   style: TextStyle(
-                    color: AppColors.surface,
+                    color: Colors.white,
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Manrope',
@@ -333,7 +373,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.black, width: 1.5),
+          borderSide: const BorderSide(color: Colors.black, width: 1.5),
         ),
       ),
     );
@@ -349,7 +389,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.black : Colors.transparent,
+          color: isSelected ? Colors.black : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
         alignment: Alignment.center,
@@ -357,7 +397,7 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
           text,
           style: TextStyle(
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-            color: isSelected ? AppColors.surface : Colors.grey[600],
+            color: isSelected ? Colors.white : Colors.grey[600],
             fontSize: 14,
             fontFamily: 'Manrope',
           ),
@@ -366,4 +406,3 @@ class _PilihanKoneksiSheetState extends State<PilihanKoneksiSheet> {
     );
   }
 }
-
