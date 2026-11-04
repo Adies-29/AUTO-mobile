@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:math'; // 👈 [TAMBAHAN] Untuk fitur random
 
 import 'package:auto/features/home/widgets/home_app_bar.dart';
 import 'package:auto/features/shared/widgets/pilihan_koneksi.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:auto/core/theme/colors.dart';
 import 'package:auto/features/shared/widgets/loading_overlay.dart';
 import 'home_connected.dart';
+import 'home_error.dart'; // 👈 [TAMBAHAN] Import halaman error
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, this.onReadMoreTap});
@@ -20,11 +22,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _isConnected = false;
   bool _isLoading = true;
+  bool _isError = false; // 👈 [TAMBAHAN] State untuk melacak error
+  
   @override
   void initState() {
     super.initState();
     _loadData();
   }
+  
   Future<void> _loadData() async {
     // panggil API / database / proses loading asli di sini
     await Future.delayed(const Duration(seconds: 1));
@@ -64,28 +69,61 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     if (result == true) {
+      // 👇 [TAMBAHAN] Logika Loading & Random 👇
       setState(() {
-        _isConnected = true;
+        _isLoading = true; // Munculkan loading overlay
       });
+
+      // Tahan loading 2 detik simulasi koneksi ke OBD
+      await Future.delayed(const Duration(seconds: 2));
+
+      final random = Random();
+      final isRandomError = random.nextBool(); // Menghasilkan true/false secara acak
+
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _isConnected = true;
+          _isError = isRandomError; // Simpan hasil random (true = Error, false = Connected)
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     Widget content;
+    
+    // 👇 [TAMBAHAN] Percabangan Tampilan 👇
     if (_isConnected) {
-      content = Scaffold(
-        backgroundColor: AppColors.background,
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.screenPadding,
+      // Jika terhubung, cek apakah error atau normal
+      if (_isError) {
+        content = Scaffold(
+          backgroundColor: AppColors.background,
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.screenPadding,
+              ),
+              child: const HomeErrorScreen(), // Tampilan Error
             ),
-            child: const HomeConnectedScreen(),
           ),
-        ),
-      );
+        );
+      } else {
+        content = Scaffold(
+          backgroundColor: AppColors.background,
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.screenPadding,
+              ),
+              child: const HomeConnectedScreen(), // Tampilan Normal
+            ),
+          ),
+        );
+      }
     } else {
+      // Tampilan Awal (Disconnected)
       content = Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(
@@ -108,12 +146,17 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     }
-     return LoadingOverlay(
+    
+    return LoadingOverlay(
       isLoading: _isLoading,
       child: content,
     );
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// KODE DI BAWAH INI TIDAK SAYA UBAH SAMA SEKALI
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _DashboardCenter extends StatelessWidget {
   const _DashboardCenter({this.onConnectTap});

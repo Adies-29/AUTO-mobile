@@ -2,6 +2,7 @@ import 'package:auto/features/home/utils/telemetry_data.dart';
 import 'package:auto/features/home/widgets/home_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:auto/core/theme/colors.dart';
+import 'package:auto/features/settings/widgets/detail_mobil.dart'; 
 
 
 class HomeConnectedScreen extends StatelessWidget {
@@ -21,8 +22,6 @@ class HomeConnectedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      // 👇 TIDAK PAKAI HORIZONTAL PADDING LAGI KARENA SUDAH DARI HOME_SCREEN 👇
-      // Hanya beri jarak atas dan bawah
       padding: const EdgeInsets.only(top: 16, bottom: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,8 +78,7 @@ class _CarShowcase extends StatelessWidget {
   const _CarShowcase();
 
   @override
-  Widget build(BuildContext context) {
-    // Menggunakan tinggi tetap yang proporsional agar mobil tidak tenggelam
+  Widget build(BuildContext context) {  
     return SizedBox(
       height: 200, 
       width: double.infinity,
@@ -140,11 +138,18 @@ class CarInfoCard extends StatelessWidget {
               ],
             ),
           ),
-          Positioned(
+            Positioned(
             right: 28,
             top: 44,
             child: GestureDetector(
-              onTap: onDetailTap,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const DetailMobilScreen(),
+                  ),
+                );
+              },
               behavior: HitTestBehavior.opaque,
               child: const Text(
                 'Lihat detail mobil →',
