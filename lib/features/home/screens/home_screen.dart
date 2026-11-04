@@ -1,6 +1,5 @@
 import 'dart:ui';
-import 'dart:math'; // 👈 [TAMBAHAN] Untuk fitur random
-
+import 'dart:math';
 import 'package:auto/features/home/widgets/home_app_bar.dart';
 import 'package:auto/features/shared/widgets/pilihan_koneksi.dart';
 import 'package:auto/core/theme/spacing.dart';
@@ -8,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:auto/core/theme/colors.dart';
 import 'package:auto/features/shared/widgets/loading_overlay.dart';
 import 'home_connected.dart';
-import 'home_error.dart'; // 👈 [TAMBAHAN] Import halaman error
+import 'home_error.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, this.onReadMoreTap});
@@ -21,23 +20,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isConnected = false;
-  bool _isLoading = true;
-  bool _isError = false; // 👈 [TAMBAHAN] State untuk melacak error
-  
-  @override
-  void initState() {
-    super.initState();
-    _loadData();
-  }
-  
-  Future<void> _loadData() async {
-    // panggil API / database / proses loading asli di sini
-    await Future.delayed(const Duration(seconds: 1));
+  bool _isError = false; 
 
-    if (!mounted) return;
-    setState(() => _isLoading = false);
-  }
-  
+  // 👇 Hanya ada state untuk koneksi OBD di sini 👇
+  // (Splash loading awal sudah diurus oleh main.dart)
+  bool _isConnecting = false;  
 
   void _showConnectionModal() async {
     final result = await showModalBottomSheet<bool>(
@@ -53,9 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () => Navigator.pop(context),
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                  child: Container(
-                        
-                  ),
+                  child: Container(),
                 ),
               ),
             ),
@@ -69,22 +54,21 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     if (result == true) {
-      // 👇 [TAMBAHAN] Logika Loading & Random 👇
       setState(() {
-        _isLoading = true; // Munculkan loading overlay
+        _isConnecting = true; // Munculkan loading overlay (Spinner)
       });
 
       // Tahan loading 2 detik simulasi koneksi ke OBD
       await Future.delayed(const Duration(seconds: 2));
 
       final random = Random();
-      final isRandomError = random.nextBool(); // Menghasilkan true/false secara acak
+      final isRandomError = random.nextBool(); 
 
       if (mounted) {
         setState(() {
-          _isLoading = false;
+          _isConnecting = false;
           _isConnected = true;
-          _isError = isRandomError; // Simpan hasil random (true = Error, false = Connected)
+          _isError = isRandomError; 
         });
       }
     }
@@ -94,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     Widget content;
     
-    // 👇 [TAMBAHAN] Percabangan Tampilan 👇
     if (_isConnected) {
       // Jika terhubung, cek apakah error atau normal
       if (_isError) {
@@ -128,34 +111,35 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: AppColors.background,
         body: SafeArea(
           child: Padding(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.screenPadding,
             ),
             child: Column(
               children: [
-                SizedBox(height: 16),
-                DashboardTopBar(),
+                const SizedBox(height: 16),
+                const DashboardTopBar(),
                 Expanded(
-                  child: _DashboardCenter(onConnectTap: _showConnectionModal,),
+                  child: _DashboardCenter(onConnectTap: _showConnectionModal),
                 ),
-                ReadMoreButton(onPressed: widget.onReadMoreTap,),
-                SizedBox(height: 16,),
+                ReadMoreButton(onPressed: widget.onReadMoreTap),
+                const SizedBox(height: 16),
               ],
             ),
-          )
+          ),
         ),
       );
     }
     
+    // 👇 LoadingOverlay (Spinner) hanya aktif saat proses koneksi OBD 👇
     return LoadingOverlay(
-      isLoading: _isLoading,
+      isLoading: _isConnecting,
       child: content,
     );
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// KODE DI BAWAH INI TIDAK SAYA UBAH SAMA SEKALI
+// KODE DI BAWAH INI TIDAK BERUBAH SAMA SEKALI
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _DashboardCenter extends StatelessWidget {
