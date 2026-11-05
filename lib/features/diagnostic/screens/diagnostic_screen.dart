@@ -275,7 +275,7 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
         ],
         suggestedActions: [
           'Ngecek sensor',
-          'Ambatukam segera',
+          'Segera ke bengkel terdekat',
         ],
       ),
       DtcModel(
