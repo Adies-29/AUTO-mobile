@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:auto/features/shared/widgets/app_button.dart';
 import 'package:auto/features/diagnostic/screens/models/dtc_model.dart'; // Pastikan ini ada
 import 'package:auto/features/shared/widgets/my_app_bar.dart';
+import 'package:auto/features/diagnostic/screens/diagnostic_detail.dart';
 
 class DiagnosticScreen extends StatefulWidget {
   const DiagnosticScreen({super.key});
@@ -174,7 +175,14 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
                             code: dtc.code,
                             title: dtc.title,
                             description: dtc.description,
-                            onSearchPressed: () {},
+                            onSearchPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => DiagnosticDetailScreen(dtc: dtc),
+                                ),
+                              );
+                            },
                             onAIPressed: () {},
                           ))
                       .toList(),
@@ -198,7 +206,14 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
                             code: dtc.code,
                             title: dtc.title,
                             description: dtc.description,
-                            onSearchPressed: () {},
+                            onSearchPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => DiagnosticDetailScreen(dtc: dtc),
+                                ),
+                              );
+                            },
                             onAIPressed: () {},
                           ))
                       .toList(),
@@ -222,7 +237,14 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
                             code: dtc.code,
                             title: dtc.title,
                             description: dtc.description,
-                            onSearchPressed: () {},
+                            onSearchPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => DiagnosticDetailScreen(dtc: dtc),
+                                ),
+                              );
+                            },
                             onAIPressed: () {},
                           ))
                       .toList(),
@@ -236,50 +258,93 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
   }
 
   void _performScan() {
-    // Simulasi hasil scan
     final List<DtcModel> dummyData = [
-      // Jika mau test "tidak ada anomali", kosongkan list ini: []
-      // Jika mau test "ada anomali", isi dengan data ini:
       DtcModel(
         code: 'P03200',
         title: 'Engine Temp',
-        description:
-            'Suhu radiator terlalu tinggi, suhu mesin terlalu tinggi',
+        description: 'Suhu radiator terlalu tinggi, suhu mesin terlalu tinggi',
         status: 'Terkonfirmasi',
+        detailDescription:
+            'Sensor ETC mendeteksi anomali suhu yang tidak wajar. '
+            'Suhu menunjukan 120 derajat secara terus menerus selama beberapa hari.',
+        possibleCauses: [
+          'Masalah pada sensor WTS (Water Temperature Sensor)',
+          'Radiator mampet',
+          'Air Radiator berkurang (pendinginan kurang maksimal)',
+          'Mesin e-pan jeblok',
+        ],
+        suggestedActions: [
+          'Ngecek sensor',
+          'Ambatukam segera',
+        ],
       ),
       DtcModel(
         code: 'P04400',
         title: 'Engine and Transmission',
         description: 'Fuel Volume Regulator Control high',
         status: 'Terkonfirmasi',
+        detailDescription:
+            'ECM mendeteksi tegangan kontrol regulator volume bahan bakar '
+            'melebihi ambang batas yang ditentukan.',
+        possibleCauses: [
+          'Fuel Volume Regulator rusak atau kotor',
+          'Tekanan bahan bakar berlebih',
+          'Kabel atau konektor pada regulator putus/korosi',
+        ],
+        suggestedActions: [
+          'Periksa konektor dan kabel regulator',
+          'Bersihkan atau ganti Fuel Volume Regulator',
+          'Ukur tekanan bahan bakar di pompa',
+        ],
       ),
       DtcModel(
         code: 'P01000',
         title: 'Mass Air Flow Sensor',
         description: 'Mass or Volume Air Flow Circuit low',
         status: 'Pending',
+        detailDescription:
+            'Sinyal dari sensor MAF (Mass Air Flow) berada di bawah nilai '
+            'minimum yang diharapkan oleh ECM.',
+        possibleCauses: [
+          'Filter udara kotor atau tersumbat',
+          'Sensor MAF kotor',
+          'Kebocoran di saluran udara (intake leak)',
+          'Konektor MAF sensor longgar',
+        ],
+        suggestedActions: [
+          'Bersihkan sensor MAF dengan MAF cleaner spray',
+          'Ganti filter udara',
+          'Periksa kondisi selang/saluran intake dari kebocoran',
+        ],
       ),
       DtcModel(
         code: 'P03000',
         title: 'Random/Multiple Cylinder Misfire',
         description: 'Engine misfire detected',
         status: 'Permanent',
+        detailDescription:
+            'ECM mendeteksi misfire (pembakaran tidak sempurna) pada beberapa '
+            'silinder secara acak, yang dapat merusak catalytic converter.',
+        possibleCauses: [
+          'Busi aus atau rusak',
+          'Koil pengapian lemah',
+          'Injektor kotor atau bocor',
+          'Kompresi mesin rendah pada beberapa silinder',
+        ],
+        suggestedActions: [
+          'Ganti busi sesuai spesifikasi pabrikan',
+          'Periksa kondisi koil pengapian',
+          'Bersihkan injektor bahan bakar',
+          'Lakukan tes kompresi mesin',
+        ],
       ),
-      // DtcModel(
-      //   code: 'P04200',
-      //   title: 'Catalyst System Efficiency',
-      //   description: 'Catalyst system efficiency below threshold',
-      //   status: 'Permanent',
-      // ),
     ];
 
     setState(() {
       if (dummyData.isEmpty) {
-        // Tidak ada anomali
         _showNoAnomalies = true;
         _scanResults = null;
       } else {
-        // Ada anomali, tampilkan hasil scan inline (bottom nav tetap muncul)
         _scanResults = dummyData;
         _showNoAnomalies = false;
       }
