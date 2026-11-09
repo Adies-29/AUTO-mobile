@@ -4,11 +4,15 @@ import 'package:auto/core/theme/colors.dart';
 class AuthHeader extends StatelessWidget {
   final String title;
   final String subtitle;
+  final Color titleColor;
+  final Color subtitleColor;
 
   const AuthHeader({
     super.key,
     required this.title,
     required this.subtitle,
+    this.titleColor = AppColors.black,
+    this.subtitleColor = AppColors.subtitleGrey,
   });
 
   @override
@@ -17,18 +21,26 @@ class AuthHeader extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: AppColors.black,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'Manrope',
+            fontSize: 28,
+            fontWeight: FontWeight.w700,
+            height: 1.2,
+            letterSpacing: -0.4,
+            color: titleColor,
           ),
         ),
         const SizedBox(height: 8),
         Text(
           subtitle,
-          style: const TextStyle(
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'Manrope',
             fontSize: 14,
-            color: AppColors.subtitleGrey,
+            fontWeight: FontWeight.w400,
+            height: 1.5,
+            color: subtitleColor,
           ),
         ),
       ],
