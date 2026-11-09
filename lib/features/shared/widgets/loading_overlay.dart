@@ -1,5 +1,5 @@
-import 'dart:ui'; // 👈 Wajib untuk efek Blur
-import 'package:flutter/cupertino.dart'; // 👈 Wajib untuk CupertinoActivityIndicator
+import 'dart:ui'; 
+import 'package:flutter/cupertino.dart'; 
 import 'package:flutter/material.dart';
 import 'package:auto/core/theme/colors.dart';
 
@@ -19,24 +19,24 @@ class LoadingOverlay extends StatelessWidget {
       children: [
         child,
         if (isLoading) ...[
-          // 1. Efek Blur & Gelap di seluruh layar (Khas iOS)
           Positioned.fill(
+            // 👇 Perbaikan 1: Tambahkan 'child:' 👇
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
               child: Container(
-                color: Colors.black.withValues(alpha: 0.2), // Sedikit digelapkan
+                color: Colors.black.withValues(alpha: 0.2), 
               ),
             ),
           ),
           
-          // 2. Kotak HUD (Heads-Up Display) ala iOS
           Center(
             child: Container(
               width: 80,
               height: 80,
-              decoration: BoxDecoration(
-                color: AppColors.white.withValues(alpha: 0.9), // Putih agak transparan
-                borderRadius: BorderRadius.circular(20), // Sudut membulat (squircle)
+              // 👇 Perbaikan 2: borderRadius masuk ke dalam BoxDecoration 👇
+              decoration: BoxDecoration( 
+                color: AppColors.white.withValues(alpha: 0.9), 
+                borderRadius: BorderRadius.circular(20), 
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.1),
@@ -46,7 +46,6 @@ class LoadingOverlay extends StatelessWidget {
                 ],
               ),
               child: const Center(
-                // 3. Spinner khas Apple (Garis tipis & abu-abu)
                 child: CupertinoActivityIndicator(
                   radius: 16,
                   color: Colors.grey, 

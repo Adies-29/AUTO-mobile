@@ -5,6 +5,7 @@ import 'package:auto/features/home/utils/telemetry_data.dart';
 import 'package:auto/features/settings/widgets/detail_mobil.dart'; 
 import 'package:auto/features/diagnostic/screens/models/dtc_model.dart';
 import 'package:auto/features/diagnostic/screens/diagnostic_results_screen.dart'; 
+import 'package:auto/features/diagnostic/screens/models/dummy_dtc_data.dart';
 
 class HomeErrorScreen extends StatelessWidget {
   final String carName;
@@ -169,43 +170,18 @@ class ErrorCarInfoCard extends StatelessWidget {
             ),
           ),
           
-          // 👇 Tombol "Lihat Masalah" Merah (SUDAH DIPERBAIKI) 👇
+         
           Positioned(
             right: 28,
             bottom: 20,
             child: GestureDetector(
               onTap: () {
-                // Navigasi ke halaman hasil diagnostik dengan membawa data dummy
                 Navigator.push(
                   context,
                   MaterialPageRoute(
+                    // 👇 Cukup panggil variabelnya 👇
                     builder: (context) => DiagnosticResultsScreen(
-                      dtcList: [
-                        DtcModel(
-                          code: 'P03200',
-                          title: 'Engine Temp',
-                          description: 'Suhu radiator terlalu tinggi, suhu mesin terlalu tinggi',
-                          status: 'Terkonfirmasi',
-                        ),
-                        DtcModel(
-                          code: 'P04400',
-                          title: 'Engine and Transmission',
-                          description: 'Fuel Volume Regulator Control high',
-                          status: 'Terkonfirmasi',
-                        ),
-                        DtcModel(
-                          code: 'P01000',
-                          title: 'Mass Air Flow Sensor',
-                          description: 'Mass or Volume Air Flow Circuit low',
-                          status: 'Pending',
-                        ),
-                        DtcModel(
-                          code: 'P03000',
-                          title: 'Random/Multiple Cylinder Misfire',
-                          description: 'Engine misfire detected',
-                          status: 'Permanent',
-                        ),
-                      ],
+                      dtcList: DummyDtcData.engineErrors,
                     ),
                   ),
                 );

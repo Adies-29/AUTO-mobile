@@ -5,6 +5,8 @@ import '../widgets/garasi.dart';
 import 'package:auto/features/shared/widgets/pilihan_koneksi.dart';
 import 'package:auto/features/liveData/screens/live_data_screen.dart';
 import 'package:auto/features/home/widgets/dialog_cara_menghubungkan.dart';
+import 'package:auto/features/shared/widgets/tanya_ai.dart';
+
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -87,7 +89,14 @@ class SettingsScreen extends StatelessWidget {
                 _SettingsItem(
                   icon: Icons.auto_awesome_outlined,
                   title: 'Tanya Ai',
-                  onTap: () {},
+                  onTap: () {
+                     Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TanyaAiScreen(),
+                      ),
+                    );
+                  },
                 ),
                 _buildDivider(),
                 _SettingsItem(
