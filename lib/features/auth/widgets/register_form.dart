@@ -90,6 +90,14 @@ class _RegisterFormState extends State<RegisterForm> {
           const SizedBox(height: 16),
           TextButton(
             onPressed: () => Navigator.pop(context),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.statusGrey,
+              textStyle: const TextStyle(
+                fontFamily: 'Manrope',
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             child: const Text('Kembali'),
           ),
         ],
