@@ -4,6 +4,11 @@ import 'package:auto/core/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:auto/features/shared/widgets/my_app_bar.dart';
 
+// 👇 Import yang diperlukan untuk fitur Not Connected 👇
+import 'package:provider/provider.dart';
+import 'package:auto/core/providers/car_status_provider.dart';
+import 'package:auto/features/shared/widgets/not_connected_state.dart';
+
 class LiveDataScreen extends StatefulWidget {
   const LiveDataScreen({super.key});
 
@@ -11,10 +16,10 @@ class LiveDataScreen extends StatefulWidget {
   State<LiveDataScreen> createState() => LiveDataScreenState();
 }
 
-  class LiveDataScreenState extends State<LiveDataScreen>{
-    final searchController = TextEditingController();
-    String query = '';
-    final sensors = SensorDefinitions.sensors;
+class LiveDataScreenState extends State<LiveDataScreen>{
+  final searchController = TextEditingController();
+  String query = '';
+  final sensors = SensorDefinitions.sensors;
 
   @override
   void dispose(){
@@ -24,6 +29,22 @@ class LiveDataScreen extends StatefulWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 👇 Cek status koneksi mobil 👇
+    final carStatus = Provider.of<CarStatusProvider>(context);
+
+    // Jika belum terhubung, tampilkan halaman peringatan
+    if (!carStatus.isConnected) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: MyAppBar(title: 'Live Data'),
+        body: const NotConnectedState(
+          icon: Icons.monitor_heart_outlined,
+          message: 'Hubungkan mobil anda terlebih dahulu untuk melihat data sensor secara real-time.',
+        ),
+      );
+    }
+
+    // 👇 Jika sudah terhubung, tampilkan UI Live Data (list sensor) seperti biasa 👇
     final q = query.toLowerCase();
     final rows = sensors
           .where((s) =>
@@ -32,7 +53,7 @@ class LiveDataScreen extends StatefulWidget {
         .toList();
 
     return Scaffold(
-      appBar: MyAppBar(title: ('Live Data')),
+      appBar: MyAppBar(title: 'Live Data'),
       body: Column(
         children: [
           AppSearchBar(
@@ -63,19 +84,22 @@ class LiveDataScreen extends StatefulWidget {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// KODE HEADER DAN SENSOR ROW DI BAWAH INI TETAP SAMA
+// ─────────────────────────────────────────────────────────────────────────────
+
 class HeaderRow extends StatelessWidget {
   const HeaderRow({super.key});
   
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: AppColors.secondary)),
       ),
       child: Row(
-        children: [
+        children: const [
           Expanded(flex: 2, child: HeaderText('PID')),
           Expanded(flex: 6, child: HeaderText('Keterangan')),
           Expanded(
@@ -99,7 +123,7 @@ class HeaderText extends StatelessWidget {
     return Text(
       text,
       textAlign: align,
-      style: TextStyle(
+      style: const TextStyle(
         fontFamily: 'Manrope',
         fontSize: 11,
         fontWeight: FontWeight.w600,
@@ -117,7 +141,7 @@ class SensorsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: AppColors.secondary)),
       ),
@@ -128,7 +152,7 @@ class SensorsRow extends StatelessWidget {
             flex: 2,
             child: Text(
               sensor['pid']!,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Manrope',
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
@@ -166,4 +190,3 @@ class SensorsRow extends StatelessWidget {
     );
   }
 }
-

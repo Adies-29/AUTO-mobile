@@ -1,14 +1,14 @@
 import 'dart:ui';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; // 👈 Import Provider
-
+import 'package:provider/provider.dart'; 
+import 'package:auto/features/shared/widgets/dialog_baca_lebih_lanjut.dart';
 import 'package:auto/features/home/widgets/home_app_bar.dart';
 import 'package:auto/features/shared/widgets/pilihan_koneksi.dart';
 import 'package:auto/core/theme/spacing.dart';
 import 'package:auto/core/theme/colors.dart';
 import 'package:auto/features/shared/widgets/loading_dialog.dart';
-import 'package:auto/core/providers/car_status_provider.dart'; // 👈 Import Provider Status
+import 'package:auto/core/providers/car_status_provider.dart'; 
 import 'home_connected.dart';
 import 'home_error.dart';
 
@@ -250,7 +250,14 @@ class ReadMoreButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: onPressed,
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (context) => const DialogBacaLebihLanjut(),
+        );
+      },
       style: TextButton.styleFrom(foregroundColor: AppColors.black),
       child: const Text(
         'BACA LEBIH LANJUT →',

@@ -9,6 +9,7 @@ import 'package:auto/features/diagnostic/screens/diagnostic_screen.dart';
 import 'package:auto/features/settings/screens/settings_screen.dart';
 import 'package:auto/features/shared/widgets/app_splash_loading.dart';
 import 'package:auto/core/providers/car_status_provider.dart';
+import 'package:auto/core/providers/reminder_provider.dart';
 
 void main() {
   runApp(const MainApp());
@@ -23,6 +24,7 @@ class MainApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => CarStatusProvider()),
+        ChangeNotifierProvider(create: (_) => ReminderProvider()),
       ],
       child: MaterialApp(
         title: 'AUTO Mobile',
@@ -33,7 +35,7 @@ class MainApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4599FE)),
           useMaterial3: true,
         ),
-        home: const MainScreen(),
+        home: MainScreen(key: MainScreen.mainKey),
       ),
     );
   }
@@ -53,6 +55,10 @@ class MainScreen extends StatefulWidget {
 class MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
   bool _isAppLoading = true;
+
+  void selectTab(int index) {
+    setState(() => currentIndex = index);
+  }
 
   final List<Widget> pages = [
     const HomeScreen(),

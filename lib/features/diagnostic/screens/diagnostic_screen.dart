@@ -1,13 +1,11 @@
 import 'package:auto/core/theme/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:auto/features/shared/widgets/app_button.dart';
 import 'package:auto/features/diagnostic/screens/dialog_pengertian_diag.dart';
 import 'package:auto/features/diagnostic/screens/diagnostic_results_screen.dart';
-import 'package:auto/features/diagnostic/screens/models/dtc_model.dart';
-import 'package:auto/features/shared/widgets/loading_dialog.dart';
+import 'package:auto/features/diagnostic/screens/models/dummy_dtc_data.dart';
 import 'package:provider/provider.dart';
 import 'package:auto/core/providers/car_status_provider.dart';
-import 'package:auto/features/diagnostic/screens/models/dummy_dtc_data.dart';
+import 'package:auto/features/shared/widgets/not_connected_state.dart'; // 👈 Import widget baru
 
 class DiagnosticScreen extends StatelessWidget {
   const DiagnosticScreen({super.key});
@@ -15,15 +13,16 @@ class DiagnosticScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final carStatus = Provider.of<CarStatusProvider>(context);
+    
+    // Jika mobil SUDAH terhubung, otomatis tampilkan hasil scan
     if (carStatus.isConnected) {
       return DiagnosticResultsScreen(
-        // 👇 Panggil dari file pusat 👇
         dtcList: carStatus.hasError ? DummyDtcData.engineErrors : [], 
         isTab: true, 
       );
     }
 
-    // 👇 JIKA BELUM TERHUBUNG (TAMPILAN AWAL TOMBOL SCAN) 👇
+    // 👇 Jika BELUM terhubung, tampilkan Empty State (tanpa tombol Scan) 👇
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -54,37 +53,10 @@ class DiagnosticScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          const Spacer(),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 32, left: 24, right: 24),
-            child: AppButton(
-              label: 'Scan',
-              variant: AppButtonVariant.filled,
-              onPressed: () => _performInitialScan(context),
-            ),
-          ),
-        ],
+      body: const NotConnectedState(
+        icon: Icons.bluetooth_disabled_rounded,
+        message: 'Hubungkan mobil anda terlebih dahulu untuk memulai proses diagnostik.',
       ),
-    );
-  }
-
-  void _performInitialScan(BuildContext context) async {
-    showLoadingDialog(context);
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (!context.mounted) return;
-    Navigator.pop(context);
-
-    final isError = DateTime.now().millisecond % 2 == 0;
-
-    // Simpan status ke provider, lalu UI akan otomatis berubah (karena menggunakan Provider)
-    Provider.of<CarStatusProvider>(context, listen: false).updateCarStatus(
-      hasError: isError,
-      dtcList: [],
-      isConnected: true,
     );
   }
 }

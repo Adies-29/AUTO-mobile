@@ -27,5 +27,6 @@ class AppColors{
   static const Color transparent = Colors.transparent;
   static const Color statusGrey = Color(0xFF9E9E9E);
   static const Color subtitleGrey = Color(0xFF6B6B6B);
+  static const Color warning = Color(0xFFFF9F0A);
 
 }
