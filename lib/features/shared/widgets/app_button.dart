@@ -1,7 +1,6 @@
 import 'package:auto/core/theme/colors.dart';
 import 'package:flutter/material.dart';
 
-
 enum AppButtonVariant { filled, blue, link, notch }
 
 class AppButton extends StatelessWidget {
@@ -22,13 +21,13 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    switch (variant){
+    switch (variant) {
       case AppButtonVariant.link:
         return TextButton(
-          onPressed: onPressed, 
+          onPressed: onPressed,
           child: Text(
             label.toUpperCase(),
-            style: TextStyle(
+            style: const TextStyle(
               fontFamily: 'Manrope',
               fontSize: 12,
               fontWeight: FontWeight.w800,
@@ -39,31 +38,29 @@ class AppButton extends StatelessWidget {
         );
       case AppButtonVariant.notch:
         return NotchButton(
-          label:label,
-          onPressed:onPressed,
+          label: label,
+          onPressed: onPressed,
           icon: notchIcon ?? Icons.directions_car,
         );
       case AppButtonVariant.blue:
         return PillButton(
-          label:label,
+          label: label,
           onPressed: onPressed,
           backgroundColor: AppColors.blueAccent,
-          margin:margin,
+          margin: margin,
         );
       case AppButtonVariant.filled:
         return PillButton(
-          label:label,
+          label: label,
           onPressed: onPressed,
           backgroundColor: AppColors.primary,
-          margin:margin,
+          margin: margin,
         );
-      
     }
   }
 }
 
 class PillButton extends StatelessWidget {
-  
   final String label;
   final VoidCallback? onPressed;
   final Color backgroundColor;
@@ -82,13 +79,13 @@ class PillButton extends StatelessWidget {
     return Container(
       margin: margin,
       child: FilledButton(
-        onPressed: onPressed, 
+        onPressed: onPressed,
         style: FilledButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: AppColors.surface,
-          shape: StadiumBorder(),
+          shape: const StadiumBorder(),
           minimumSize: const Size.fromHeight(48),
-          textStyle: TextStyle(
+          textStyle: const TextStyle(
             fontFamily: 'Manrope',
             fontSize: 15,
             fontWeight: FontWeight.w700,
@@ -115,24 +112,24 @@ class NotchButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(16, 28, 16, 0),
+      margin: const EdgeInsets.fromLTRB(16, 28, 16, 0),
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.topCenter,
         children: [
           SizedBox(
             width: double.infinity,
-            height: 50 ,
+            height: 50,
             child: FilledButton(
-              onPressed: onPressed, 
+              onPressed: onPressed,
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: AppColors.surface,
                 disabledBackgroundColor: AppColors.primary,
                 disabledForegroundColor: AppColors.surface,
-                shape: StadiumBorder(),
-                padding: EdgeInsets.only(top: 8),
-                textStyle: TextStyle(
+                shape: const StadiumBorder(),
+                padding: const EdgeInsets.only(top: 8),
+                textStyle: const TextStyle(
                   fontFamily: 'Manrope',
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
@@ -151,8 +148,8 @@ class NotchButton extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: AppColors.primary,
-                  width: 1.5
-                )
+                  width: 1.5,
+                ),
               ),
               child: Center(
                 child: Container(
@@ -163,21 +160,20 @@ class NotchButton extends StatelessWidget {
                     border: Border.all(
                       color: AppColors.surface,
                       width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(5),
                   ),
-                  borderRadius: BorderRadius.circular(5),
-                ),   
-                child: Icon(
-                  Icons.photo_camera,
-                  size: 16,
-                  color: AppColors.surface,
-                )
-              )
+                  child: Icon(
+                    Icons.photo_camera,
+                    size: 16,
+                    color: AppColors.surface,
+                  ),
+                ),
+              ),
             ),
-          )
           )
         ],
       ),
     );
   }
 }
-

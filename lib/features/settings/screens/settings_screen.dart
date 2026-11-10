@@ -5,6 +5,9 @@ import '../widgets/garasi.dart';
 import 'package:auto/features/shared/widgets/pilihan_koneksi.dart';
 import 'package:auto/features/liveData/screens/live_data_screen.dart';
 import 'package:auto/features/home/widgets/dialog_cara_menghubungkan.dart';
+import 'package:auto/features/shared/widgets/tanya_ai.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:auto/features/settings/widgets/reminder_settings_sheet.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -19,6 +22,23 @@ class SettingsScreen extends StatelessWidget {
         return const PilihanKoneksiSheet();
       },
     );
+  }
+
+  Future<void> _openWhatsApp() async {
+    const String phoneNumber = '6281217627226'; 
+    const String message = 'Halo Admin AUTO, saya butuh bantuan terkait aplikasi.';
+
+    final Uri url = Uri.parse(
+      'https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}',
+    );
+
+    try {
+      if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+        throw Exception('Tidak bisa membuka WhatsApp');
+      }
+    } catch (e) {
+      debugPrint('Error launching WhatsApp: $e');
+    }
   }
 
   @override
@@ -55,6 +75,19 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 _buildDivider(),
                 _SettingsItem(
+                  icon: Icons.calendar_month_outlined,
+                  title: 'Atur Jadwal Servis',
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => const ReminderSettingsSheet(),
+                    );
+                  },
+                ),
+                _buildDivider(),
+                _SettingsItem(
                   icon: Icons.sensors_outlined,
                   title: 'Sensor',
                   onTap: () {
@@ -87,13 +120,20 @@ class SettingsScreen extends StatelessWidget {
                 _SettingsItem(
                   icon: Icons.auto_awesome_outlined,
                   title: 'Tanya Ai',
-                  onTap: () {},
+                  onTap: () {
+                     Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TanyaAiScreen(),
+                      ),
+                    );
+                  },
                 ),
                 _buildDivider(),
                 _SettingsItem(
                   icon: Icons.support_agent_outlined,
                   title: 'Support',
-                  onTap: () {},
+                  onTap: () => _openWhatsApp(), 
                 ),
                 _buildDivider(),
                 _SettingsItem(

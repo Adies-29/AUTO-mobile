@@ -73,10 +73,7 @@ class DetailMobilScreen extends StatelessWidget {
             const SizedBox(height: 24),
             const Divider(color: AppColors.border),
             const SizedBox(height: 16),
-
-            // ─────────────────────────────────────────────────────────────
-            // Spesifikasi Mobil (Grid 2 Kolom)
-            // ─────────────────────────────────────────────────────────────
+            
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

@@ -3,7 +3,7 @@ import 'package:auto/features/home/widgets/home_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:auto/core/theme/colors.dart';
 import 'package:auto/features/settings/widgets/detail_mobil.dart'; 
-
+import 'package:auto/features/shared/widgets/service_reminder.dart';
 
 class HomeConnectedScreen extends StatelessWidget {
   final String carName;
@@ -16,8 +16,9 @@ class HomeConnectedScreen extends StatelessWidget {
     this.carName = 'Avanza 2016',
     this.isConnected = true,
     this.onProfileTap,
-    this.onCarDetailTap,
+    this.onCarDetailTap, 
   });
+  
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,16 @@ class HomeConnectedScreen extends StatelessWidget {
         children: [
           DashboardTopBar(onProfileTap: onProfileTap),
           const SizedBox(height: 16),
-          _ConnectionStatusLabel(connected: isConnected),
+          
+  
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _ConnectionStatusLabel(connected: isConnected),
+              const ServiceReminderBell(),
+            ],
+          ),
+          
           const SizedBox(height: 10),
           const _CarShowcase(),
           const SizedBox(height: 10),
@@ -36,6 +46,7 @@ class HomeConnectedScreen extends StatelessWidget {
             carName: carName,
             onDetailTap: onCarDetailTap,
           ),
+          
           const SizedBox(height: 16),
           _TelemetryRowOne(left: HomeTelemetryData.speedRpm, right: HomeTelemetryData.tempVolt),
           const SizedBox(height: 11),
@@ -45,6 +56,8 @@ class HomeConnectedScreen extends StatelessWidget {
     );
   }
 }
+
+// ... (Sisa kode _ConnectionStatusLabel, _CarShowcase, dll tetap sama seperti milikmu)
 
 class _ConnectionStatusLabel extends StatelessWidget {
   const _ConnectionStatusLabel({required this.connected});
@@ -85,11 +98,10 @@ class _CarShowcase extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Gambar Mobil
           Positioned(
             bottom: 20,
             child: Image.asset(
-              'assets/images/avanza.png', // Pastikan file ini ada di folder assets kamu
+              'assets/images/avanza.png',
               height: 160,
               fit: BoxFit.contain,
               errorBuilder: (context, error, stackTrace) => const Icon(Icons.directions_car, size: 100, color: Colors.grey),
@@ -138,7 +150,7 @@ class CarInfoCard extends StatelessWidget {
               ],
             ),
           ),
-            Positioned(
+          Positioned(
             right: 28,
             top: 44,
             child: GestureDetector(
@@ -239,7 +251,8 @@ class _TelemetryGroupCard extends StatelessWidget {
         children: [
           for (var i = 0; i < items.length; i++) ...[
             if (i > 0) const SizedBox(width: 6),
-            Expanded(child: _TelemetryTile(item: items[i], boxHeight: 56)),
+            // 👇 UBAH boxHeight DARI 56 MENJADI 72 👇
+            Expanded(child: _TelemetryTile(item: items[i], boxHeight: 72)),
           ],
         ],
       ),
@@ -268,7 +281,8 @@ class _TelemetryWideCard extends StatelessWidget {
         children: [
           for (var i = 0; i < items.length; i++) ...[
             if (i > 0) const SizedBox(width: 6),
-            Expanded(child: _TelemetryTile(item: items[i], boxHeight: 31)),
+            // 👇 UBAH boxHeight DARI 31 MENJADI 52 👇
+            Expanded(child: _TelemetryTile(item: items[i], boxHeight: 52)),
           ],
         ],
       ),
@@ -298,7 +312,8 @@ class _TelemetryTile extends StatelessWidget {
           ),
           child: FittedBox(fit: BoxFit.scaleDown, child: _TelemetryValue(item)),
         ),
-        const SizedBox(height: 4),
+        // 👇 Jarak antara kotak dan teks label diperlebar dikit 👇
+        const SizedBox(height: 6), 
         Text(
           item.label,
           textAlign: TextAlign.center,
@@ -371,4 +386,3 @@ class _TelemetryValue extends StatelessWidget {
     );
   }
 }
-

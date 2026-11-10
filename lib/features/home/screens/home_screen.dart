@@ -1,11 +1,14 @@
 import 'dart:ui';
 import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; 
+import 'package:auto/features/shared/widgets/dialog_baca_lebih_lanjut.dart';
 import 'package:auto/features/home/widgets/home_app_bar.dart';
 import 'package:auto/features/shared/widgets/pilihan_koneksi.dart';
 import 'package:auto/core/theme/spacing.dart';
-import 'package:flutter/material.dart';
 import 'package:auto/core/theme/colors.dart';
-import 'package:auto/features/shared/widgets/loading_overlay.dart';
+import 'package:auto/features/shared/widgets/loading_dialog.dart';
+import 'package:auto/core/providers/car_status_provider.dart'; 
 import 'home_connected.dart';
 import 'home_error.dart';
 
@@ -20,11 +23,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isConnected = false;
-  bool _isError = false; 
-
-  // 👇 Hanya ada state untuk koneksi OBD di sini 👇
-  // (Splash loading awal sudah diurus oleh main.dart)
-  bool _isConnecting = false;  
 
   void _showConnectionModal() async {
     final result = await showModalBottomSheet<bool>(
@@ -54,21 +52,23 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     if (result == true) {
-      setState(() {
-        _isConnecting = true; // Munculkan loading overlay (Spinner)
-      });
-
-      // Tahan loading 2 detik simulasi koneksi ke OBD
+      showLoadingDialog(context); 
       await Future.delayed(const Duration(seconds: 2));
 
       final random = Random();
       final isRandomError = random.nextBool(); 
 
       if (mounted) {
+        Navigator.pop(context); // Tutup Loading Dialog
+        
+        // 👇 SIMPAN HASIL RANDOM KE PROVIDER AGAR SINKRON 👇
+        Provider.of<CarStatusProvider>(context, listen: false).updateCarStatus(
+          hasError: isRandomError,
+          dtcList: [], // Di home belum ada data DTC, kita biarkan kosong dulu
+        );
+
         setState(() {
-          _isConnecting = false;
           _isConnected = true;
-          _isError = isRandomError; 
         });
       }
     }
@@ -76,44 +76,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget content;
-    
-    if (_isConnected) {
-      // Jika terhubung, cek apakah error atau normal
-      if (_isError) {
-        content = Scaffold(
-          backgroundColor: AppColors.background,
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.screenPadding,
-              ),
-              child: const HomeErrorScreen(), // Tampilan Error
-            ),
-          ),
-        );
-      } else {
-        content = Scaffold(
-          backgroundColor: AppColors.background,
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.screenPadding,
-              ),
-              child: const HomeConnectedScreen(), // Tampilan Normal
-            ),
-          ),
-        );
-      }
-    } else {
-      // Tampilan Awal (Disconnected)
-      content = Scaffold(
+    // 👇 DENGARKAN PERUBAHAN DARI PROVIDER 👇
+    final carStatus = Provider.of<CarStatusProvider>(context);
+
+    // Tampilan Awal (Disconnected)
+    if (!_isConnected) {
+      return Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.screenPadding,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
             child: Column(
               children: [
                 const SizedBox(height: 16),
@@ -129,18 +101,21 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     }
-    
-    // 👇 LoadingOverlay (Spinner) hanya aktif saat proses koneksi OBD 👇
-    return LoadingOverlay(
-      isLoading: _isConnecting,
-      child: content,
+
+    // Tampilan Connected (Error atau Normal)
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
+          child: carStatus.hasError 
+              ? const HomeErrorScreen() // Jika Provider bilang error
+              : const HomeConnectedScreen(), // Jika Provider bilang normal
+        ),
+      ),
     );
   }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// KODE DI BAWAH INI TIDAK BERUBAH SAMA SEKALI
-// ─────────────────────────────────────────────────────────────────────────────
+} 
 
 class _DashboardCenter extends StatelessWidget {
   const _DashboardCenter({this.onConnectTap});
@@ -275,7 +250,14 @@ class ReadMoreButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: onPressed,
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (context) => const DialogBacaLebihLanjut(),
+        );
+      },
       style: TextButton.styleFrom(foregroundColor: AppColors.black),
       child: const Text(
         'BACA LEBIH LANJUT →',

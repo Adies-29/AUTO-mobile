@@ -3,8 +3,9 @@ import 'package:auto/core/theme/colors.dart';
 import 'package:auto/features/home/widgets/home_app_bar.dart';
 import 'package:auto/features/home/utils/telemetry_data.dart';
 import 'package:auto/features/settings/widgets/detail_mobil.dart'; 
-import 'package:auto/features/diagnostic/screens/models/dtc_model.dart';
 import 'package:auto/features/diagnostic/screens/diagnostic_results_screen.dart'; 
+import 'package:auto/features/diagnostic/screens/models/dummy_dtc_data.dart';
+import 'package:auto/features/shared/widgets/service_reminder.dart';
 
 class HomeErrorScreen extends StatelessWidget {
   final String carName;
@@ -21,13 +22,20 @@ class HomeErrorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      clipBehavior: Clip.none,
       padding: const EdgeInsets.only(top: 16, bottom: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DashboardTopBar(onProfileTap: onProfileTap),
           const SizedBox(height: 16),
-          _ConnectionStatusLabel(connected: isConnected),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _ConnectionStatusLabel(connected: isConnected),
+              const ServiceReminderBell(),
+            ],
+          ),
           const SizedBox(height: 10),
           const _CarShowcase(),
           const SizedBox(height: 10),
@@ -169,43 +177,17 @@ class ErrorCarInfoCard extends StatelessWidget {
             ),
           ),
           
-          // 👇 Tombol "Lihat Masalah" Merah (SUDAH DIPERBAIKI) 👇
+          // 👇 Tombol "Lihat Masalah" 👇
           Positioned(
             right: 28,
             bottom: 20,
             child: GestureDetector(
               onTap: () {
-                // Navigasi ke halaman hasil diagnostik dengan membawa data dummy
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => DiagnosticResultsScreen(
-                      dtcList: [
-                        DtcModel(
-                          code: 'P03200',
-                          title: 'Engine Temp',
-                          description: 'Suhu radiator terlalu tinggi, suhu mesin terlalu tinggi',
-                          status: 'Terkonfirmasi',
-                        ),
-                        DtcModel(
-                          code: 'P04400',
-                          title: 'Engine and Transmission',
-                          description: 'Fuel Volume Regulator Control high',
-                          status: 'Terkonfirmasi',
-                        ),
-                        DtcModel(
-                          code: 'P01000',
-                          title: 'Mass Air Flow Sensor',
-                          description: 'Mass or Volume Air Flow Circuit low',
-                          status: 'Pending',
-                        ),
-                        DtcModel(
-                          code: 'P03000',
-                          title: 'Random/Multiple Cylinder Misfire',
-                          description: 'Engine misfire detected',
-                          status: 'Permanent',
-                        ),
-                      ],
+                      dtcList: DummyDtcData.engineErrors,
                     ),
                   ),
                 );
@@ -268,10 +250,6 @@ class _ErrorStatusRow extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// BAGIAN TELEMETRI (Sama seperti home_connected, hanya beda logika warna)
-// ─────────────────────────────────────────────────────────────────────────────
-
 class _TelemetryRowOne extends StatelessWidget {
   const _TelemetryRowOne({required this.left, required this.right});
   final List<TelemetryItem> left;
@@ -309,7 +287,8 @@ class _TelemetryGroupCard extends StatelessWidget {
         children: [
           for (var i = 0; i < items.length; i++) ...[
             if (i > 0) const SizedBox(width: 6),
-            Expanded(child: _TelemetryTile(item: items[i], boxHeight: 56)),
+            // 👇 boxHeight diubah dari 56 menjadi 72 👇
+            Expanded(child: _TelemetryTile(item: items[i], boxHeight: 72)),
           ],
         ],
       ),
@@ -338,7 +317,8 @@ class _TelemetryWideCard extends StatelessWidget {
         children: [
           for (var i = 0; i < items.length; i++) ...[
             if (i > 0) const SizedBox(width: 6),
-            Expanded(child: _TelemetryTile(item: items[i], boxHeight: 31)),
+            // 👇 boxHeight diubah dari 31 menjadi 52 👇
+            Expanded(child: _TelemetryTile(item: items[i], boxHeight: 52)),
           ],
         ],
       ),
@@ -368,7 +348,8 @@ class _TelemetryTile extends StatelessWidget {
           ),
           child: FittedBox(fit: BoxFit.scaleDown, child: _TelemetryValue(item)),
         ),
-        const SizedBox(height: 4),
+        // 👇 Jarak label ditambah dari 4 menjadi 6 👇
+        const SizedBox(height: 6), 
         Text(
           item.label,
           textAlign: TextAlign.center,

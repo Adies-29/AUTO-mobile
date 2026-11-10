@@ -8,6 +8,8 @@ import 'package:auto/features/liveData/screens/live_data_screen.dart';
 import 'package:auto/features/diagnostic/screens/diagnostic_screen.dart';
 import 'package:auto/features/settings/screens/settings_screen.dart';
 import 'package:auto/features/shared/widgets/app_splash_loading.dart';
+import 'package:auto/core/providers/car_status_provider.dart';
+import 'package:auto/core/providers/reminder_provider.dart';
 
 void main() {
   runApp(const MainApp());
@@ -18,8 +20,12 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => AuthProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => CarStatusProvider()),
+        ChangeNotifierProvider(create: (_) => ReminderProvider()),
+      ],
       child: MaterialApp(
         title: 'AUTO Mobile',
         debugShowCheckedModeBanner: false,
@@ -29,7 +35,7 @@ class MainApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4599FE)),
           useMaterial3: true,
         ),
-        home: const MainScreen(),
+        home: MainScreen(key: MainScreen.mainKey),
       ),
     );
   }
@@ -38,13 +44,21 @@ class MainApp extends StatelessWidget {
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
+  // 👇 TAMBAHKAN GLOBAL KEY INI AGAR BISA DIAKSES DARI FILE LAIN 👇
+  static final GlobalKey<MainScreenState> mainKey = GlobalKey<MainScreenState>();
+
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<MainScreen> createState() => MainScreenState(); // 👈 Hapus garis bawah
 }
 
-class _MainScreenState extends State<MainScreen> {
+// 👇 UBAH NAMA CLASS MENJADI PUBLIC (TANPA GARIS BAWAH) 👇
+class MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
   bool _isAppLoading = true;
+
+  void selectTab(int index) {
+    setState(() => currentIndex = index);
+  }
 
   final List<Widget> pages = [
     const HomeScreen(),
@@ -56,7 +70,6 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    // Loading Splash Screen selama 3 detik
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) setState(() => _isAppLoading = false);
     });
@@ -64,7 +77,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // 1. Tampilkan Splash Screen
     if (_isAppLoading) {
       return const Scaffold(
         backgroundColor: Colors.black,
@@ -72,23 +84,19 @@ class _MainScreenState extends State<MainScreen> {
       );
     }
 
-    // 2. Tampilkan Aplikasi Utama
     return Scaffold(
-      // Hapus 'extendBody: true' agar tombol Scan tidak tertutup
       body: IndexedStack(
         index: currentIndex,
         children: pages,
       ),
-      
-      // 👇 PERBAIKAN NAVBAR: Bungkus dengan Container agar muncul sempurna 👇
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16), // Jarak dari pinggir layar
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           child: Container(
-            height: 60, // Tinggi navbar
+            height: 60,
             decoration: BoxDecoration(
-              color: Colors.white, // Background navbar
-              borderRadius: BorderRadius.circular(30), // Sudut membulat
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(30),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.06),
